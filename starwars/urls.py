@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from starwars.Apps.swapipe.views import myView
+from starwars.Apps.swapipe.views import homeView
 
 urlpatterns = [
+    path('', homeView, name='home'),
     path('admin/', admin.site.urls),
     path('home/', myView)
 ]

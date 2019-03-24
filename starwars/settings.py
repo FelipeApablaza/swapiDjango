@@ -55,7 +55,7 @@ ROOT_URLCONF = 'starwars.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['C:/Users/Felipe/Desktop/DJANGO PROJECT/starwars/starwars/Apps/swapipe/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
