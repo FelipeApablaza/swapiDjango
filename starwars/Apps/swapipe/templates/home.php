@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
   <title>
@@ -30,7 +31,7 @@
 
   {% for f in films%}
   <tr>
-    <td>{{ f.title}}</td>
+    <td><a href=film/{{f.id}} > {{f.title}}</td>
     <td>{{ f.date}}</td>
     <td>{{ f.director}}</td>
     <td>{{ f.producer}}</td>

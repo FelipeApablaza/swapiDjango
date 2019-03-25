@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from starwars.Apps.swapipe.views import myView
 from starwars.Apps.swapipe.views import homeView
+from starwars.Apps.swapipe.views import filmView, starshipView, characterView, planetView
 
 urlpatterns = [
-    path('', homeView, name='home'),
     path('admin/', admin.site.urls),
-    path('home/', myView)
+    path('', homeView, name='home'),
+    path('film/<num>',filmView),
+    path('planet/<num>',planetView),
+    path('character/<num>',characterView),
+    path('starship/<num>',starshipView)
 ]
