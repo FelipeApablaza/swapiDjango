@@ -28,7 +28,7 @@
     <tr><th>Año</th><th>{{f.date}}</th></tr>
     <tr><th>Naves</th><th>
       {% for n in f.starships%}
-      <a href=https://stark-sands-10256.herokuapp.com/starship/{{n.id}} > {{n.name}}
+      <a href=http://localhost:3000/starship/{{n.id}} > {{n.name}}
       {%endfor%}
     </th></tr>
     <tr><th>Planetas</th><th>
