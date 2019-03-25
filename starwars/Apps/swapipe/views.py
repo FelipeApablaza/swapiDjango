@@ -131,3 +131,7 @@ def buscarFunc(request):
         id=r['results'][0]['url'].split('/')[-2]
         status=True
         return starshipView(request,id)
+
+    else:
+        status=True
+        return render(request,'buscar.php')
