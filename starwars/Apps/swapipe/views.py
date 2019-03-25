@@ -137,7 +137,7 @@ def buscarFunc(request):
     return render(request,'buscar.php',dicc)
 
 def buscarTodo(ans,entity):
-    r = requests.get(base_url + "{}/?search=".format(entity) + ans)
+    r = requests.get(url + "{}/?search=".format(entity) + ans)
     res = r.json()
     urls = []
     next = True
