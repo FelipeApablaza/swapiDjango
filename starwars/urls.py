@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from starwars.Apps.swapipe.views import homeView
-from starwars.Apps.swapipe.views import filmView, starshipView, characterView, planetView
+from starwars.Apps.swapipe.views import filmView, starshipView, characterView, planetView, buscarFunc
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +24,6 @@ urlpatterns = [
     path('film/<num>',filmView),
     path('planet/<num>',planetView),
     path('character/<num>',characterView),
-    path('starship/<num>',starshipView)
+    path('starship/<num>',starshipView),
+    path('buscar/',buscarFunc)
 ]

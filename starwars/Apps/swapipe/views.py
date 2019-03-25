@@ -43,10 +43,91 @@ def filmView(request,num):
     return render(request,'film.php',dicc)
 
 def planetView(request,num):
-    return render(request,'planet.php')
+    r = requests.get(url+"planets/"+num)
+    r = r.json()
+
+    dicc={'planet':[{'name':r['name'],'rotation_period':r['rotation_period'],'orbital_period':r['orbital_period'],'diameter':r['diameter'],'climate':r['climate'],'gravity':r['gravity'],'terrain':r['terrain'],'surface_water':r['surface_water'],'population':r['population'],'residents':[],'films':[]}]}
+    for x in r['residents']:
+        res=requests.get(x)
+        res=res.json()
+        dicc['planet'][0]['residents'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+
+    for y in r['films']:
+        res=requests.get(y)
+        res=res.json()
+        dicc['planet'][0]['films'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
+
+    return render(request,'planet.php',dicc)
 
 def characterView(request,num):
-    return render(request,'character.php')
+    r = requests.get(url+"people/"+num)
+    r = r.json()
+
+    dicc={'character':[{'name':r['name'],'height':r['height'],'mass':r['mass'],'hair_color':r['hair_color'],'skin_color':r['skin_color'],'eye_color':r['eye_color'],'birth_year':r['birth_year'],'gender':r['gender'],'homeworld':'','films':[],'starships':[]}]}
+    for x in r['starships']:
+        res=requests.get(x)
+        res=res.json()
+        dicc['character'][0]['starships'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+
+    for y in r['films']:
+        res=requests.get(y)
+        res=res.json()
+        dicc['character'][0]['films'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
+
+    z = r['homeworld']
+    res = requests.get(z)
+    res = res.json()
+    dicc['character'][0]['homeworld']=[{'name':res['name'],'id':res['url'].split('/')[-2]}]
+    return render(request,'character.php',dicc)
 
 def starshipView(request,num):
-    return render(request,'starship.php')
+    r = requests.get(url+"starships/"+num)
+    r = r.json()
+
+    dicc={'starship':[{'name':r['name'],'model':r['model'],'manufacturer':r['manufacturer'],'cost_in_credits':r['cost_in_credits'],'length':r['length'],'max_atmosphering_speed':r['max_atmosphering_speed'],'crew':r['crew'],'passengers':r['passengers'],'cargo_capacity':r['cargo_capacity'],'consumables':r['consumables'],'hyperdrive_rating':r['hyperdrive_rating'],'MGLT':r['MGLT'],'starship_class':r['starship_class'],'pilots':[],'films':[]}]}
+    for x in r['pilots']:
+        res=requests.get(x)
+        res=res.json()
+        dicc['starship'][0]['pilots'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+
+    for y in r['films']:
+        res=requests.get(y)
+        res=res.json()
+        dicc['starship'][0]['films'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
+
+    return render(request,'starship.php',dicc)
+
+def buscarFunc(request):
+    var=request.GET['search']
+    status=False
+
+    r = requests.get(url+"people/?search="+var)
+    r = r.json()
+    if r['count']>0 and not status:
+        id=r['results'][0]['url'].split('/')[-2]
+        status=True
+        return characterView(request,id)
+
+
+    r = requests.get(url+"films/?search="+var)
+    r = r.json()
+    if r['count']>0 and not status:
+        id=r['results'][0]['url'].split('/')[-2]
+        status=True
+        return filmView(request,id)
+
+
+    r = requests.get(url+"planets/?search="+var)
+    r = r.json()
+    if r['count']>0 and not status:
+        id=r['results'][0]['url'].split('/')[-2]
+        status=True
+        return planetView(request,id)
+
+
+    r = requests.get(url+"starships/?search="+var)
+    r = r.json()
+    if r['count']>0 and not status:
+        id=r['results'][0]['url'].split('/')[-2]
+        status=True
+        return starshipView(request,id)
