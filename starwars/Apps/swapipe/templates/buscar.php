@@ -81,7 +81,7 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
               <th>Naves</th>
               <th class="normal">{% if slista %}
                     {%for s in slista%}
-                      <a href=https://feapablaza.herokuapp.com/film/{{s.id}}> {{ s.name }}
+                      <a href=https://feapablaza.herokuapp.com/starship/{{s.id}}> {{ s.name }}
                     {%endfor%}
                   {% endif %}
                   {% if not slista %}
@@ -95,7 +95,7 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
 
               <th class="normal">{% if plista %}
                     {%for p in plista%}
-                      <a href=https://feapablaza.herokuapp.com/film/{{p.id}} > {{ p.name }}
+                      <a href=https://feapablaza.herokuapp.com/planet/{{p.id}} > {{ p.name }}
                     {%endfor%}
                   {% endif %}
                   {% if not plista %}
