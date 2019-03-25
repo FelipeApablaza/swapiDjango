@@ -105,28 +105,28 @@ def buscarFunc(request):
     clista={'clista':[]}
     for c in res1:
         res = requests.get(c)
-        res = req.json()
+        res = res.json()
         clista['clista'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
 
     res2 = buscarTodo(var,'films')
     flista={'flista':[]}
     for f in res2:
         res = requests.get(f)
-        res = req.json()
+        res = res.json()
         flista['flista'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
 
     res3 = buscarTodo(var,'starships')
     slista={'slista':[]}
     for s in res3:
         res = requests.get(s)
-        res = req.json()
+        res = res.json()
         slista['slista'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
 
     res4 = buscarTodo(var,'planets')
     plista={'plista':[]}
     for p in res4:
         res = requests.get(p)
-        res = req.json()
+        res = res.json()
         plista['plista'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
 
     dicc={}
