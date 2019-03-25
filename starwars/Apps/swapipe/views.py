@@ -101,34 +101,33 @@ def buscarFunc(request):
     var=request.GET['search']
     status=False
 
-    c = requests.get(url+"people/?search="+var)
-    c = c.json()
-    c = c['results']
+    res1 = buscarTodo(var,'people')
     clista={'clista':[]}
-    for people in c:
-        clista['clista'].append({'name':people['name'],'id':people['url'].split('/')[-2]})
+    for c in res1:
+        req = requests.get(c)
+        req = req.json()
+        clista['clista'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
 
-
-    f = requests.get(url+"films/?search="+var)
-    f = f.json()
-    f = f['results']
+    res2 = buscarTodo(var,'films')
     flista={'flista':[]}
-    for film in f:
-        flista['flista'].append({'title':film['title'],'id':film['url'].split('/')[-2]})
+    for f in res2:
+        req = requests.get(f)
+        req = req.json()
+        flista['flista'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
 
-    s = requests.get(url+"starships/?search="+var)
-    s = s.json()
-    s = s['results']
+    res3 = buscarTodo(var,'starships')
     slista={'slista':[]}
-    for star in s:
-        slista['slista'].append({'name':star['name'],'id':star['url'].split('/')[-2]})
+    for s in res3:
+        req = requests.get(s)
+        req = req.json()
+        slista['slista'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
 
-    p = requests.get(url+"planets/?search="+var)
-    p = p.json()
-    p = p['results']
+    res4 = buscarTodo(var,'planets')
     plista={'plista':[]}
-    for planet in p:
-        plista['plista'].append({'name':planet['name'],'id':planet['url'].split('/')[-2]})
+    for p in res4:
+        req = requests.get(p)
+        req = req.json()
+        plista['plista'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
 
     dicc={}
     dicc.update(clista)
@@ -136,3 +135,17 @@ def buscarFunc(request):
     dicc.update(slista)
     dicc.update(plista)
     return render(request,'buscar.php',dicc)
+
+def buscarTodo(ans,entity):
+    r = requests.get(base_url + "{}/?search=".format(entity) + ans)
+    res = r.json()
+    urls = []
+    next = True
+    while next:
+        for resource in res['results']:
+            urls.append(resource['url'])
+        if bool(res['next']):
+            res = requests.get(res["next"]).json()
+        else:
+            next = False
+    return urls
