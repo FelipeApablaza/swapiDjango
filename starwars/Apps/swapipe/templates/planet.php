@@ -28,7 +28,7 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
 <div class="topnav">
   <a class="active" href="https://feapablaza.herokuapp.com/">Home</a>
   <div class="search-container">
-    <form action="https://feapablaza.herokuapp.com/buscar/">
+    <form action="https://feapablaza.herokuapp.com/">
       <input type="text" placeholder="buscar.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form>

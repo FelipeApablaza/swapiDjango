@@ -101,37 +101,38 @@ def buscarFunc(request):
     var=request.GET['search']
     status=False
 
-    r = requests.get(url+"people/?search="+var)
-    r = r.json()
-    if r['count']>0 and not status:
-        id=r['results'][0]['url'].split('/')[-2]
-        status=True
-        return characterView(request,id)
+    c = requests.get(url+"people/?search="+var)
+    c = c.json()
+    c = c['results']
+    clista={'clista':[]}
+    for people in c:
+        clista['clista'].append({'name':people['name'],'id':people['url'].split('/')[-2]})
 
 
-    r = requests.get(url+"films/?search="+var)
-    r = r.json()
-    if r['count']>0 and not status:
-        id=r['results'][0]['url'].split('/')[-2]
-        status=True
-        return filmView(request,id)
+    f = requests.get(url+"films/?search="+var)
+    f = f.json()
+    f = f['results']
+    flista={'flista':[]}
+    for film in f:
+        flista['flista'].append({'title':film['title'],'id':film['url'].split('/')[-2]})
 
+    s = requests.get(url+"starships/?search="+var)
+    s = s.json()
+    s = s['results']
+    slista={'slista':[]}
+    for star in s:
+        slista['slista'].append({'name':star['name'],'id':star['url'].split('/')[-2]})
 
-    r = requests.get(url+"planets/?search="+var)
-    r = r.json()
-    if r['count']>0 and not status:
-        id=r['results'][0]['url'].split('/')[-2]
-        status=True
-        return planetView(request,id)
+    p = requests.get(url+"planets/?search="+var)
+    p = p.json()
+    p = p['results']
+    plista={'plista':[]}
+    for planet in p:
+        plista['plista'].append({'name':planet['name'],'id':planet['url'].split('/')[-2]})
 
-
-    r = requests.get(url+"starships/?search="+var)
-    r = r.json()
-    if r['count']>0 and not status:
-        id=r['results'][0]['url'].split('/')[-2]
-        status=True
-        return starshipView(request,id)
-
-    else:
-        status=True
-        return render(request,'buscar.php')
+    dicc={}
+    dicc.update(clista)
+    dicc.update(flista)
+    dicc.update(slista)
+    dicc.update(plista)
+    return render(request,'buscar.php',dicc)

@@ -47,6 +47,67 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <body>
   <div class="container">
-  <h1 class="text-center" >SIN RESULTADOS</h1>
+  <h1 class="text-center" >STAR WARS SWAPIPE</h1>
 </div>
 <div class="container">
+
+  <table style="width:100%">
+            <tr>
+              <th>Películas</th>
+              <th class="normal">{% if flista %}
+                    {%for f in flista%}
+                      <a href=https://feapablaza.herokuapp.com/film/{{f.id}} > {{ f.title }}
+                    {%endfor%}
+                  {% endif %}
+                  {% if not flista %}
+                    <p>sin resultados</p>
+                  {% endif %}
+              </th>
+            </tr>
+            <tr>
+              <th>Personajes</th>
+              <th class="normal">{% if clista %}
+                    {%for c in clista %}
+                      <a href=https://feapablaza.herokuapp.com/character/{{c.id}} > {{ c.name }}
+                    {%endfor%}
+                  {% endif %}
+                  {% if not clista %}
+                    <p>sin resultados</p>
+                  {% endif %}
+              </th>
+            </tr>
+
+            <tr>
+              <th>Naves</th>
+              <th class="normal">{% if slista %}
+                    {%for s in slista%}
+                      <a href=https://feapablaza.herokuapp.com/film/{{s.id}}> {{ s.name }}
+                    {%endfor%}
+                  {% endif %}
+                  {% if not slista %}
+                    <p>sin resultados</p>
+                  {% endif %}
+              </th>
+            </tr>
+
+            <tr>
+              <th>Planetas</th>
+
+              <th class="normal">{% if plista %}
+                    {%for p in plista%}
+                      <a href=https://feapablaza.herokuapp.com/film/{{p.id}} > {{ p.name }}
+                    {%endfor%}
+                  {% endif %}
+                  {% if not plista %}
+                    <p>sin resultados</p>
+                  {% endif %}
+              </th>
+            </tr>
+  </table>
+
+
+
+
+
+</body>
+</html>
