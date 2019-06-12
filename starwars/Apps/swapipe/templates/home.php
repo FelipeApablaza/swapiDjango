@@ -76,7 +76,8 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
 
 </table>
 
-Desarrollado por Felipe Apablaza Schmidt
+Tarea 3
+Felipe Apablaza Schmidt
 </div>
 
 
