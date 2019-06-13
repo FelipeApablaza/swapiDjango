@@ -1,99 +1,324 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from gql import gql, Client
+from gql.transport.requests import RequestsHTTPTransport
 import requests
 
 url='https://swapi.co/api/'
+urlgql='https://swapi-graphql-integracion-t3.herokuapp.com/'
+
+_transport = RequestsHTTPTransport(
+    url=urlgql,
+    use_json=True,
+)
+client = Client(
+    transport=_transport,
+    fetch_schema_from_transport=True,
+)
 
 
 def homeView(request):
-    r = requests.get(url+'films/')
-    r = r.json()
-    num= r['count']
-    res= r['results']
+
+    query = gql ('''
+    {
+        allFilms {
+            totalCount
+            edges {
+                node {
+                    title
+                    releaseDate
+                    director
+                    producers
+                    episodeID
+                    id
+                }
+            }
+        }
+    }
+    ''')
+
+    r_graph = client.execute(query)
+    r_graph = r_graph['allFilms']
+    num_graph = r_graph['totalCount']
+    res_graph = r_graph['edges']
+    print(res_graph)
+
+    r = r_graph
+    num = num_graph
+    res = res_graph
+
+
+    # r = requests.get(url+'films/')
+    # r = r.json()
+    # num= r['count']
+    # res= r['results']
     roman={1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI',7:'VII'}
     dicc={'films':[]}
     for i in range (num):
-        dicc['films'].append({'title':res[i]['title'],'date':res[i]['release_date'][0:4],'director':res[i]['director']
-        ,'producer':res[i]['producer'],'episode':roman[res[i]['episode_id']],'id':res[i]['url'].split('/')[-2]})
+        dicc['films'].append({'title':res[i]['node']['title'],'date':res[i]['node']['releaseDate'][0:4],'director':res[i]['node']['director']
+        ,'episode':roman[res[i]['node']['episodeID']],'id':res[i]['node']['id']})
+        strcat = ''
+        for x in res[i]['node']['producers']:
+            strcat +=x+', '
+        dicc['films'][i].update({'producer':strcat[:-2]})
+
 
     dicc['films'].sort(key=lambda x:x['date'])
     return render(request,'home.php',dicc)
 
 def filmView(request,num):
-    r = requests.get(url+"films/"+num)
-    r = r.json()
+    command = '''
+    { 
+        film(id:"%s") {
+            title
+            episodeID
+            openingCrawl
+            director
+            producers
+            releaseDate
+            starshipConnection {
+                edges {
+                    node {
+                        name
+                        id
+                    }
+                }
+            }
+            planetConnection {
+                edges {
+                    node {
+                        name
+                        id
+                    }
+                }
+            }
+            characterConnection {
+                edges {
+                    node {
+                        name
+                        id
+                    }
+                }
+            }
+        }
+    }
+    ''' %(num)
+    query = gql ( command )
 
-    dicc={'film':[{'title':r['title'],'episode':r['episode_id'],'opening':r['opening_crawl'],'director':r['director'],'producer':r['producer'],'date':r['release_date'],'starships':[],'planets':[],'characters':[]}]}
+    result = client.execute(query)
+    r = result['film']
 
-    for x in r['starships']:
-        res=requests.get(x)
-        res=res.json()
-        dicc['film'][0]['starships'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
 
-    for y in r['planets']:
-        res=requests.get(y)
-        res=res.json()
-        dicc['film'][0]['planets'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+    # r = requests.get(url+"films/"+num)
+    # r = r.json()
 
-    for z in r['characters']:
-        res=requests.get(z)
-        res=res.json()
-        dicc['film'][0]['characters'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+    dicc={'film':[{'title':r['title'],'episode':r['episodeID'],'opening':r['openingCrawl'],'director':r['director'],'date':r['releaseDate'],'starships':[],'planets':[],'characters':[]}]}
+    strcat = ''
+    for w in r['producers']:
+        strcat +=w+', '
+    dicc['film'][0].update({'producer':strcat[:-2]})
+
+    for x in r['starshipConnection']['edges']:
+        # res=requests.get(x)
+        # res=res.json()
+        dicc['film'][0]['starships'].append({'name':x['node']['name'],'id':x['node']['id']})
+
+    for y in r['planetConnection']['edges']:
+        # res=requests.get(y)
+        # res=res.json()
+        dicc['film'][0]['planets'].append({'name':y['node']['name'],'id':y['node']['id']})
+
+    for z in r['characterConnection']['edges']:
+        # res=requests.get(z)
+        # res=res.json()
+        dicc['film'][0]['characters'].append({'name':z['node']['name'],'id':z['node']['id']})
 
     return render(request,'film.php',dicc)
 
 def planetView(request,num):
-    r = requests.get(url+"planets/"+num)
-    r = r.json()
+    command = ''' 
+    { 
+        planet(id:"%s") {
+            name
+            rotationPeriod
+            orbitalPeriod
+            diameter
+            climates
+            gravity
+            terrains
+            surfaceWater
+            population
+            residentConnection {
+                edges {
+                    node {
+                        name
+                        id
+                    }
+                }
+            }
+            filmConnection {
+                edges {
+                    node {
+                        title
+                        id
+                    }
+                }
+            }
+        }
+    }
+    ''' %(num)
+    query = gql ( command )
 
-    dicc={'planet':[{'name':r['name'],'rotation_period':r['rotation_period'],'orbital_period':r['orbital_period'],'diameter':r['diameter'],'climate':r['climate'],'gravity':r['gravity'],'terrain':r['terrain'],'surface_water':r['surface_water'],'population':r['population'],'residents':[],'films':[]}]}
-    for x in r['residents']:
-        res=requests.get(x)
-        res=res.json()
-        dicc['planet'][0]['residents'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+    result = client.execute(query)
+    r = result['planet']
+    
+    # r = requests.get(url+"planets/"+num)
+    # r = r.json()
 
-    for y in r['films']:
-        res=requests.get(y)
-        res=res.json()
-        dicc['planet'][0]['films'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
+    dicc={'planet':[{'name':r['name'],'rotation_period':r['rotationPeriod'],'orbital_period':r['orbitalPeriod'],'diameter':r['diameter'],'gravity':r['gravity'],'surface_water':r['surfaceWater'],'population':r['population'],'residents':[],'films':[]}]}
+   
+    strcat1 = ''
+    for w in r['climates']:
+        strcat1 +=w+', '
+    dicc['planet'][0].update({'climate':strcat1[:-2]})
+
+    strcat2 = ''
+    for v in r['terrains']:
+        strcat2 +=v+', '
+    dicc['planet'][0].update({'terrain':strcat2[:-2]})
+
+    
+    for x in r['residentConnection']['edges']:
+        # res=requests.get(x)
+        # res=res.json()
+        dicc['planet'][0]['residents'].append({'name':x['node']['name'],'id':x['node']['id']})
+
+    for y in r['filmConnection']['edges']:
+        # res=requests.get(y)
+        # res=res.json()
+        dicc['planet'][0]['films'].append({'title':y['node']['title'],'id':y['node']['id']})
 
     return render(request,'planet.php',dicc)
 
 def characterView(request,num):
-    r = requests.get(url+"people/"+num)
-    r = r.json()
+    command = ''' 
+    {
+        person(id:"%s")
+        {
+            name
+            height
+            mass
+            hairColor
+            skinColor
+            eyeColor
+            birthYear
+            gender
+            homeworld {
+                name
+                id
+            }
+            filmConnection {
+                edges {
+                    node {
+                        title
+                        id
+                    }
+                }
+            }
+            starshipConnection {
+                edges {
+                    node {
+                        name
+                        id
+                    }
+                }
+            }
+        }
+    }
+    '''%(num)
 
-    dicc={'character':[{'name':r['name'],'height':r['height'],'mass':r['mass'],'hair_color':r['hair_color'],'skin_color':r['skin_color'],'eye_color':r['eye_color'],'birth_year':r['birth_year'],'gender':r['gender'],'homeworld':'','films':[],'starships':[]}]}
-    for x in r['starships']:
-        res=requests.get(x)
-        res=res.json()
-        dicc['character'][0]['starships'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+    query = gql ( command )
 
-    for y in r['films']:
-        res=requests.get(y)
-        res=res.json()
-        dicc['character'][0]['films'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
+    result = client.execute(query)
+    r = result['person']
+    # r = requests.get(url+"people/"+num)
+    # r = r.json()
+
+    dicc={'character':[{'name':r['name'],'height':r['height'],'mass':r['mass'],'hair_color':r['hairColor'],'skin_color':r['skinColor'],'eye_color':r['eyeColor'],'birth_year':r['birthYear'],'gender':r['gender'],'homeworld':'','films':[],'starships':[]}]}
+    for x in r['starshipConnection']['edges']:
+        # res=requests.get(x)
+        # res=res.json()
+        dicc['character'][0]['starships'].append({'name':x['node']['name'],'id':x['node']['id']})
+
+    for y in r['filmConnection']['edges']:
+        # res=requests.get(y)
+        # res=res.json()
+        dicc['character'][0]['films'].append({'title':y['node']['title'],'id':y['node']['id']})
 
     z = r['homeworld']
-    res = requests.get(z)
-    res = res.json()
-    dicc['character'][0]['homeworld']=[{'name':res['name'],'id':res['url'].split('/')[-2]}]
+    # res = requests.get(z)
+    # res = res.json()
+    dicc['character'][0]['homeworld']=[{'name':z['name'],'id':z['id']}]
     return render(request,'character.php',dicc)
 
 def starshipView(request,num):
-    r = requests.get(url+"starships/"+num)
-    r = r.json()
+    command = ''' 
+    { 
+        starship(id:"%s") {
+            name
+            model
+            manufacturers
+            costInCredits
+            length
+            maxAtmospheringSpeed
+            crew
+            passengers
+            cargoCapacity
+            consumables
+            hyperdriveRating
+            MGLT
+            starshipClass
+            pilotConnection {
+                edges {
+                    node {
+                        name
+                        id
+                    }
+                }
+            }
+            filmConnection {
+                edges {
+                    node {
+                        title
+                        id
+                    }
+                }
+            }
+        }
+    }
+    ''' %(num)
+    query = gql ( command )
 
-    dicc={'starship':[{'name':r['name'],'model':r['model'],'manufacturer':r['manufacturer'],'cost_in_credits':r['cost_in_credits'],'length':r['length'],'max_atmosphering_speed':r['max_atmosphering_speed'],'crew':r['crew'],'passengers':r['passengers'],'cargo_capacity':r['cargo_capacity'],'consumables':r['consumables'],'hyperdrive_rating':r['hyperdrive_rating'],'MGLT':r['MGLT'],'starship_class':r['starship_class'],'pilots':[],'films':[]}]}
-    for x in r['pilots']:
-        res=requests.get(x)
-        res=res.json()
-        dicc['starship'][0]['pilots'].append({'name':res['name'],'id':res['url'].split('/')[-2]})
+    result = client.execute(query)
+    r = result['starship']
+    # r = requests.get(url+"starships/"+num)
+    # r = r.json()
 
-    for y in r['films']:
-        res=requests.get(y)
-        res=res.json()
-        dicc['starship'][0]['films'].append({'title':res['title'],'id':res['url'].split('/')[-2]})
+    dicc={'starship':[{'name':r['name'],'model':r['model'],'cost_in_credits':r['costInCredits'],'length':r['length'],'max_atmosphering_speed':r['maxAtmospheringSpeed'],'crew':r['crew'],'passengers':r['passengers'],'cargo_capacity':r['cargoCapacity'],'consumables':r['consumables'],'hyperdrive_rating':r['hyperdriveRating'],'MGLT':r['MGLT'],'starship_class':r['starshipClass'],'pilots':[],'films':[]}]}
+    strcat = ''
+    for w in r['manufacturers']:
+        strcat +=w+', '
+    dicc['starship'][0].update({'manufacturer':strcat[:-2]})
+    
+    for x in r['pilotConnection']['edges']:
+        # res=requests.get(x)
+        # res=res.json()
+        dicc['starship'][0]['pilots'].append({'name':x['node']['name'],'id':x['node']['id']})
+
+    for y in r['filmConnection']['edges']:
+        # res=requests.get(y)
+        # res=res.json()
+        dicc['starship'][0]['films'].append({'title':y['node']['title'],'id':y['node']['id']})
 
     return render(request,'starship.php',dicc)
 
