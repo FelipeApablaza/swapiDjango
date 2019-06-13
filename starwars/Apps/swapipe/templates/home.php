@@ -26,11 +26,9 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
 </head>
 <body>
 <div class="topnav">
-  <!-- <a class="active" href="https://feapablaza.herokuapp.com/">Home</a> -->
-  <a class="active" href="http://localhost:3000/">Home</a>
+  <a class="active" href="https://feapablaza.herokuapp.com/">Home</a>
   <div class="search-container">
-    <!-- <form action="https://feapablaza.herokuapp.com/buscar/"> -->
-    <!-- <form action="https://localhost:3000/buscar/">
+    <!-- <form action="https://feapablaza.herokuapp.com/buscar/">
       <input type="text" placeholder="buscar.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form> -->
@@ -67,8 +65,7 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
 
   {% for f in films%}
   <tr>
-    <!-- <td><a href=https://feapablaza.herokuapp.com/film/{{f.id}} > {{f.title}}</td> -->
-    <td><a href=http://localhost:3000/film/{{f.id}} > {{f.title}}</td>
+    <td><a href=https://feapablaza.herokuapp.com/film/{{f.id}} > {{f.title}}</td>
     <td>{{ f.date}}</td>
     <td>{{ f.director}}</td>
     <td>{{ f.producer}}</td>

@@ -41,7 +41,7 @@ def homeView(request):
     r_graph = r_graph['allFilms']
     num_graph = r_graph['totalCount']
     res_graph = r_graph['edges']
-    print(res_graph)
+    # print(res_graph)
 
     r = r_graph
     num = num_graph

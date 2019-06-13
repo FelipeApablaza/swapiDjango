@@ -26,11 +26,9 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
 </head>
 <body>
 <div class="topnav">
-  <!-- <a class="active" href="https://feapablaza.herokuapp.com/">Home</a> -->
-  <a class="active" href="http://localhost:3000/">Home</a>
+  <a class="active" href="https://feapablaza.herokuapp.com/">Home</a>
   <div class="search-container">
     <!-- <form action="https://feapablaza.herokuapp.com/buscar/">
-      <form action="http://localhost:3000/buscar/">
       <input type="text" placeholder="buscar.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form> -->
@@ -70,14 +68,12 @@ body {  margin: 0;  font-family: Arial, Helvetica, sans-serif;}
     <tr><th>Clase de nave</th><th>{{f.starship_class}}</th></tr>
     <tr><th>Pilotos</th><th>
       {% for n in f.pilots%}
-      <!-- <a href=https://feapablaza.herokuapp.com/character/{{n.id}} > {{n.name}} -->
-      <a href=http://localhost:3000/character/{{n.id}} > {{n.name}} |
+      <a href=https://feapablaza.herokuapp.com/character/{{n.id}} > {{n.name}} |
       {%endfor%}
     </th></tr>
     <tr><th>Películas</th><th>
       {% for n in f.films%}
-      <!-- <a href=https://feapablaza.herokuapp.com/film/{{n.id}} > {{n.title}} -->
-      <a href=http://localhost:3000/film/{{n.id}} > {{n.title}} |
+      <a href=https://feapablaza.herokuapp.com/film/{{n.id}} > {{n.title}} |
       {%endfor%}
     </th></tr>
     {% endfor %}

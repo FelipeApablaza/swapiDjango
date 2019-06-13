@@ -1,1 +1,2 @@
-Felipe Apablaza Schmidt 15200043 
+Tarea 3: graphql
+Felipe Apablaza
